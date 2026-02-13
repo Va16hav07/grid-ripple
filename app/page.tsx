@@ -68,29 +68,29 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center gradient-bg p-4">
+      <div className="w-full max-w-md game-container">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-indigo-900 mb-2">Grid Ripple</h1>
-          <p className="text-indigo-700 text-sm">Click boxes to trigger ripple effects</p>
+          <h1 className="text-4xl font-bold mb-2">Grid Ripple</h1>
+          <p className="subtitle text-indigo-700 text-sm">Click boxes to trigger ripple effects</p>
         </div>
 
         {/* Stats */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-around text-center">
+        <div className="stats-card rounded-lg p-4 mb-6 flex justify-around text-center">
           <div>
             <p className="text-gray-600 text-sm font-medium">Locked Boxes</p>
-            <p className="text-2xl font-bold text-red-600">{lockedCount}/9</p>
+            <p className="text-2xl locked-count">{lockedCount}/9</p>
           </div>
           <div className="border-l border-gray-300"></div>
           <div>
             <p className="text-gray-600 text-sm font-medium">Max Value</p>
-            <p className="text-2xl font-bold text-indigo-600">{Math.max(...grid)}</p>
+            <p className="text-2xl max-value">{Math.max(...grid)}</p>
           </div>
         </div>
 
         {/* Grid */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="game-grid rounded-lg p-6 mb-6">
           <div className="grid grid-cols-3 gap-3">
             {grid.map((value, index) => {
               const style = getBoxStyle(value);
@@ -101,6 +101,11 @@ export default function Home() {
                   key={index}
                   onClick={() => handleBoxClick(index)}
                   disabled={isLockedState}
+                  className={`grid-box ${
+                    isLockedState 
+                      ? "opacity-75" 
+                      : "hover:scale-105 active:scale-95 hover:shadow-lg"
+                  }`}
                   style={{
                     ...style,
                     borderRadius: "8px",
@@ -114,11 +119,6 @@ export default function Home() {
                     transition: "all 0.2s ease",
                     transform: isLockedState ? "scale(0.95)" : "scale(1)",
                   }}
-                  className={`${
-                    isLockedState 
-                      ? "opacity-75" 
-                      : "hover:scale-105 active:scale-95 hover:shadow-lg"
-                  }`}
                   title={isLockedState ? "This box is locked" : ""}
                 >
                   {value}
@@ -131,7 +131,7 @@ export default function Home() {
         {/* Reset Button */}
         <button
           onClick={() => setGrid(Array(9).fill(0))}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+          className="reset-button w-full text-white font-semibold py-3 px-4 rounded-lg"
         >
           Reset Grid
         </button>
