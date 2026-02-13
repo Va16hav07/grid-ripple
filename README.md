@@ -64,13 +64,3 @@ tsconfig.json          # TypeScript config
 next.config.ts         # Next.js config
 ```
 
-## Styling
-
-The project uses a custom color scheme with CSS variables:
-- Primary: Indigo (`#4f46e5`)
-- Accent: Red (`#ef4444`)
-- Gradients and smooth transitions for enhanced UX
-
-## License
-
-This project is open source.
