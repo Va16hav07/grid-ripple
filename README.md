@@ -1,8 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grid Ripple
+
+An interactive 3x3 grid game with ripple effects and dynamic state management. Click boxes to increment their values and trigger cascading effects across the grid.
+
+## Features
+
+- **Interactive Grid**: 9 clickable boxes in a 3x3 layout
+- **Ripple Effects**: Values change with special cascading rules
+- **Locked State**: Boxes lock when reaching value 15 or higher
+- **Real-time Stats**: Track locked boxes and maximum grid value
+- **Smooth UI**: Gradient backgrounds, polished hover effects, and responsive design
+
+## Game Mechanics
+
+- **Clicking a Box**: Increments its value by 1
+- **Modulo 3**: When a box reaches a multiple of 3, the box to the right decreases by 1 (if not locked)
+- **Modulo 5**: When a box reaches a multiple of 5, the box below increases by 2 (if not locked)
+- **Locked Boxes**: Once a box reaches 15+, it's locked (red, non-clickable)
+
+## Technologies
+
+- **Next.js 15**: React framework for production
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first styling
+- **React Hooks**: State management with `useState`
 
 ## Getting Started
 
-First, run the development server:
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
@@ -10,27 +40,37 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to play.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  ├── page.tsx          # Main game component
+  ├── layout.tsx        # Root layout
+  └── globals.css       # Global styles and theme
+public/                 # Static assets
+package.json           # Dependencies
+tsconfig.json          # TypeScript config
+next.config.ts         # Next.js config
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Styling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project uses a custom color scheme with CSS variables:
+- Primary: Indigo (`#4f46e5`)
+- Accent: Red (`#ef4444`)
+- Gradients and smooth transitions for enhanced UX
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open source.
