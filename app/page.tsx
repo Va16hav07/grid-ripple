@@ -1,65 +1,141 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
+  const [grid, setGrid] = useState<number[]>(Array(9).fill(0));
+  const lockedCount = grid.filter(v => v >= 15).length;
+
+  const getRowCol = (index: number) => ({
+    row: Math.floor(index / 3),
+    col: index % 3,
+  });
+
+  const getRightIndex = (index: number) => {
+    const { row, col } = getRowCol(index);
+    if (col === 2) return null;
+    return row * 3 + (col + 1);
+  };
+
+  const getBelowIndex = (index: number) => {
+    const { row, col } = getRowCol(index);
+    if (row === 2) return null;
+    return (row + 1) * 3 + col;
+  };
+
+  const isLocked = (index: number) => grid[index] >= 15;
+
+  const handleBoxClick = (index: number) => {
+    if (isLocked(index)) return;
+
+    const newGrid = [...grid];
+    newGrid[index] += 1;
+
+    if (newGrid[index] % 3 === 0) {
+      const rightIndex = getRightIndex(index);
+      if (rightIndex !== null && !isLocked(rightIndex)) {
+        newGrid[rightIndex] -= 1;
+      }
+    }
+
+    if (newGrid[index] % 5 === 0) {
+      const belowIndex = getBelowIndex(index);
+      if (belowIndex !== null && !isLocked(belowIndex)) {
+        newGrid[belowIndex] += 2;
+      }
+    }
+
+    setGrid(newGrid);
+  };
+
+  const getBoxStyle = (value: number) => {
+    if (value >= 15) {
+      return {
+        backgroundColor: "#ef4444",
+        color: "white",
+      };
+    }
+    if (value % 2 === 0) {
+      return {
+        backgroundColor: "#e0e7ff",
+        color: "#1e1b4b",
+      };
+    }
+    return {
+      backgroundColor: "#1e1b4b",
+      color: "#fff",
+    };
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-indigo-900 mb-2">Grid Ripple</h1>
+          <p className="text-indigo-700 text-sm">Click boxes to trigger ripple effects</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Stats */}
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex justify-around text-center">
+          <div>
+            <p className="text-gray-600 text-sm font-medium">Locked Boxes</p>
+            <p className="text-2xl font-bold text-red-600">{lockedCount}/9</p>
+          </div>
+          <div className="border-l border-gray-300"></div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium">Max Value</p>
+            <p className="text-2xl font-bold text-indigo-600">{Math.max(...grid)}</p>
+          </div>
         </div>
-      </main>
+
+        {/* Grid */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="grid grid-cols-3 gap-3">
+            {grid.map((value, index) => {
+              const style = getBoxStyle(value);
+              const isLockedState = isLocked(index);
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleBoxClick(index)}
+                  disabled={isLockedState}
+                  style={{
+                    ...style,
+                    borderRadius: "8px",
+                    boxShadow: isLockedState ? "0 4px 12px rgba(255, 0, 0, 0.3)" : "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    width: "100%",
+                    aspectRatio: "1",
+                    fontSize: "28px",
+                    fontWeight: "bold",
+                    border: "none",
+                    cursor: isLockedState ? "not-allowed" : "pointer",
+                    transition: "all 0.2s ease",
+                    transform: isLockedState ? "scale(0.95)" : "scale(1)",
+                  }}
+                  className={`${
+                    isLockedState 
+                      ? "opacity-75" 
+                      : "hover:scale-105 active:scale-95 hover:shadow-lg"
+                  }`}
+                  title={isLockedState ? "This box is locked" : ""}
+                >
+                  {value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Reset Button */}
+        <button
+          onClick={() => setGrid(Array(9).fill(0))}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          Reset Grid
+        </button>
+      </div>
     </div>
   );
 }
